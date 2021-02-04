@@ -6,12 +6,27 @@ RUN apt-get update && apt-get -y upgrade && \
 
 WORKDIR /opt
 
-RUN wget https://nginx.org/download/nginx-1.18.0.tar.gz && \
-    tar -zxvf nginx-1.*.tar.gz && \
-    cd nginx-1.* && \
+RUN VERSION="1.18.0" && \
+    # https://nginx.org/en/pgp_keys.html
+    NGINX_GPGKEY=520A9993A1C052F8; \
+    found=''; \
+    for server in \
+        ha.pool.sks-keyservers.net \
+        hkp://keyserver.ubuntu.com:80 \
+        hkp://p80.pool.sks-keyservers.net:80 \
+        pgp.mit.edu \
+    ; do \
+        echo "Fetching GPG key $NGINX_GPGKEY from $server"; \
+        gpg --keyserver "$server" --recv-keys "$NGINX_GPGKEY" && found=yes && break; \
+    done; \
+    test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
+    wget https://nginx.org/download/nginx-${VERSION}.tar.gz.asc https://nginx.org/download/nginx-${VERSION}.tar.gz && \
+    gpg --verify nginx-${VERSION}.tar.gz.asc nginx-${VERSION}.tar.gz && \
+    tar -zxvf nginx-${VERSION}.tar.gz && \
+    cd nginx-${VERSION} && \
     ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module --with-ipv6 --with-threads --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module && \
     make && make install && \
-    cd .. && rm -rf nginx-1.*
+    cd .. && rm -rf nginx_signing.rsa.pub nginx-${VERSION}*
 
 RUN adduser --system --no-create-home --disabled-login --disabled-password --group nginx
 
