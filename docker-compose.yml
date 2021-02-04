@@ -2,7 +2,8 @@ version: '3'
 
 services:
   nginx-terminate:
-    build: ./nginx-terminate/
+    image: signal.org/tls-proxy
+    build: ./nginx/
     restart: unless-stopped
     volumes:
       - ./data/nginx-terminate:/etc/nginx/conf.d
@@ -12,7 +13,7 @@ services:
       - "443:443"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
-    build: ./nginx-relay/
+    image: signal.org/tls-proxy
     restart: unless-stopped
     volumes:
       - ./data/nginx-relay:/etc/nginx/conf.d
