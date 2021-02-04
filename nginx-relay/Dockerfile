@@ -26,7 +26,7 @@ RUN VERSION="1.18.0" && \
     cd nginx-${VERSION} && \
     ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module --with-ipv6 --with-threads --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module && \
     make && make install && \
-    cd .. && rm -rf nginx_signing.rsa.pub nginx-${VERSION}*
+    cd .. && rm -rf nginx-${VERSION}*
 
 RUN adduser --system --no-create-home --disabled-login --disabled-password --group nginx
 
