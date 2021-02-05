@@ -14,7 +14,7 @@ if [ -z "$domains" ]; then
 fi
 
 decision="$SP_REPLACE_EXISTING"
-if [ -d "$data_path" ]; then
+if [ -L "$data_path/conf/active" ]; then
   if [ -z "$decision" ]; then
     read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
   fi
