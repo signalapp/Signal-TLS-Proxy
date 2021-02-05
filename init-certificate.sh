@@ -6,11 +6,19 @@ if ! [ -x "$(command -v docker-compose)" ]; then
 fi
 
 data_path="./data/certbot"
+domains="$SP_CERTBOT_DOMAIN"
 
-read -p "Enter domain name (eg. www.example.com): " domains
+# Only ask for domain if it's not set by environment
+if [ -z "$domains" ]; then
+  read -p "Enter domain name (eg. www.example.com): " domains
+fi
 
-if [ -d "$data_path" ]; then
-  read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
+decision="$SP_REPLACE_EXISTING"
+if [ -L "$data_path/conf/active" ]; then
+  if [ -z "$decision" ]; then
+    read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
+  fi
+
   if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
     exit
   fi
