@@ -9,6 +9,4 @@ To run a Signal TLS proxy, you will need a host with a domain name that has port
 
 Your proxy is now running! You can share this with the URL `https://signal.tube/#<your_host_name>` 
 
-## Test your proxy is working
-
-TODO
+This article explains how to use it on Android: <https://support.signal.org/hc/en-us/articles/360056052052-Proxy-Support>
