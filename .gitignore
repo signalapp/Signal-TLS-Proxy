@@ -1,1 +1,5 @@
 /data/certbot
+
+#VSCode workspace Settings
+*.vscode
+*.code-workspace

@@ -1,0 +1,12 @@
+# destination                         backend
+textsecure-service.whispersystems.org signal-service
+storage.signal.org                    storage-service
+cdn.signal.org                        signal-cdn
+cdn2.signal.org                       signal-cdn2
+api.directory.signal.org              directory
+contentproxy.signal.org               content-proxy
+uptime.signal.org                     uptime
+api.backup.signal.org                 backup
+sfu.voip.signal.org                   sfu
+updates.signal.org                    updates
+updates2.signal.org                   updates2
