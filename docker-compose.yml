@@ -2,21 +2,19 @@ version: '3'
 
 services:
   nginx-terminate:
-    build: ./nginx-terminate/
+    image: nginx:alpine
     restart: unless-stopped
     volumes:
-      - ./data/nginx-terminate:/etc/nginx/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./data/nginx-terminate/nginx.conf:/etc/nginx/nginx.conf:Z
+      - ./data/certbot/conf:/etc/letsencrypt:Z
+      - ./data/certbot/www:/var/www/certbot:Z
     ports:
       - "443:443"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
-    build: ./nginx-relay/
+    image: nginx:alpine
     restart: unless-stopped
     volumes:
-      - ./data/nginx-relay:/etc/nginx/conf.d
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
+      - ./data/nginx-relay/nginx.conf:/etc/nginx/nginx.conf:Z
   certbot:
     image: certbot/certbot
     restart: unless-stopped
