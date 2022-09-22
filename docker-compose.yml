@@ -10,6 +10,7 @@ services:
       - ./data/certbot/www:/var/www/certbot
     ports:
       - "443:443"
+      - "80:80"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
     build: ./nginx-relay/
