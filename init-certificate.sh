@@ -1,7 +1,11 @@
 #!/bin/bash
 
-if ! [ -x "$(command -v docker-compose)" ]; then
-  echo 'Error: docker-compose is not installed.' >&2
+if [ -x "$(command -v docker-compose)" ]; then
+  DOCKER_COMPOSE_CMD="docker-compose"
+elif docker compose version; then
+  DOCKER_COMPOSE_CMD="docker compose"
+else
+  echo 'Error: neither docker-compose (v1) nor docker-compose-plugin (v2) is installed.' >&2
   exit 1
 fi
 
@@ -32,7 +36,7 @@ for domain in "${domains[@]}"; do
   domain_args="$domain_args -d $domain"
 done
 
-docker-compose run -p 80:80 --rm --entrypoint "\
+${DOCKER_COMPOSE_CMD} run -p 80:80 --rm --entrypoint "\
   sh -c \"certbot certonly --standalone \
     --register-unsafely-without-email \
     $domain_args \
@@ -40,4 +44,4 @@ docker-compose run -p 80:80 --rm --entrypoint "\
     --force-renewal && \
     ln -fs /etc/letsencrypt/live/$domains/ /etc/letsencrypt/active\"" certbot
 echo
-echo "After running 'docker-compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
+echo "After running '${DOCKER_COMPOSE_CMD} up --detach' you can share your proxy as: https://signal.tube/#$domains"
