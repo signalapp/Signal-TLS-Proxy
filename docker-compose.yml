@@ -18,6 +18,8 @@ services:
     cap_add:
       - CAP_NET_BIND_SERVICE
       - CHOWN
+      - SETUID
+      - SETGID
   nginx-relay:
     build: ./nginx-relay/
     restart: unless-stopped
@@ -28,6 +30,9 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    cap_add:
+      - SETUID
+      - SETGID
   certbot:
     image: certbot/certbot
     restart: unless-stopped
@@ -39,5 +44,3 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
-    cap_add:
-      - CAP_NET_BIND_SERVICE
