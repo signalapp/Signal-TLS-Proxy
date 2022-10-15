@@ -10,6 +10,7 @@ services:
       - ./data/certbot/www:/var/www/certbot:Z
     ports:
       - "443:443"
+      - "80:80"
   nginx-relay:
     image: nginx:alpine
     restart: unless-stopped
