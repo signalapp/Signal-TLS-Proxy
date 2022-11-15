@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM arm64v8/ubuntu:20.04
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y wget libpcre3-dev build-essential libssl-dev zlib1g-dev && \
