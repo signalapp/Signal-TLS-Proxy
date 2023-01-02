@@ -1,7 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env ash
 
-if ! [ -x "$(command -v docker-compose)" ]; then
-  echo 'Error: docker-compose is not installed.' >&2
+set -Eeuo pipefail
+
+if ! [ -x "$(command -v docker compose)" ]; then
+  echo 'Error: docker compose is not installed.' >&2
   exit 1
 fi
 
@@ -28,11 +30,11 @@ fi
 echo "### Requesting Let's Encrypt certificate for $domains ..."
 #Join $domains to -d args
 domain_args=""
-for domain in "${domains[@]}"; do
+for domain in $domains; do
   domain_args="$domain_args -d $domain"
 done
 
-docker-compose run -p 80:80 --rm --entrypoint "\
+docker compose run -p 80:80 --rm --entrypoint "\
   sh -c \"certbot certonly --standalone \
     --register-unsafely-without-email \
     $domain_args \
@@ -40,4 +42,4 @@ docker-compose run -p 80:80 --rm --entrypoint "\
     --force-renewal && \
     ln -fs /etc/letsencrypt/live/$domains/ /etc/letsencrypt/active\"" certbot
 echo
-echo "After running 'docker-compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
+echo "After running 'docker compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
