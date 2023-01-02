@@ -9,7 +9,9 @@ fi
 
 data_path="./data/certbot"
 
-read -p "Enter domain name (eg. www.example.com): " domains
+if [ -z "$domains"]; then
+  read -p "Enter domain name (eg. www.example.com): " domains
+fi
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
