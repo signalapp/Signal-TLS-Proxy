@@ -13,7 +13,7 @@ fi
 
 data_path="./data/certbot"
 
-if [ -z "$domains"]; then
+if [ -z "$domains" ]; then
   read -p "Enter domain name (eg. www.example.com): " domains
 fi
 
