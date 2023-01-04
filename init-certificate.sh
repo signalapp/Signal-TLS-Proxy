@@ -1,6 +1,6 @@
-#!/usr/bin/env ash
+#!/usr/bin/env sh
 
-set -Eeuo pipefail
+set -eu
 
 if ! [ -x "$(command -v docker compose)" ]; then
   echo 'Error: docker compose is not installed.' >&2
