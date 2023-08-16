@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/nginx-terminate:/etc/nginx/conf.d:Z
-      - ./data/certbot/conf:/etc/letsencrypt:Z
-      - ./data/certbot/www:/var/www/certbot:Z
+      - ./data/certbot/conf:/etc/letsencrypt:z
+      - ./data/certbot/www:/var/www/certbot:z
     ports:
       - "443:443"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
@@ -21,6 +21,6 @@ services:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
-      - ./data/certbot/conf:/etc/letsencrypt:Z
-      - ./data/certbot/www:/var/www/certbot:Z
+      - ./data/certbot/conf:/etc/letsencrypt:z
+      - ./data/certbot/www:/var/www/certbot:z
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
