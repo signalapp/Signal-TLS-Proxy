@@ -11,11 +11,13 @@ services:
     ports:
       - "443:443"
       - "80:80"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /etc/nginx/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
     image: nginx:alpine
     restart: unless-stopped
     volumes:
       - ./data/nginx-relay/nginx.conf:/etc/nginx/nginx.conf:Z
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /etc/nginx/nginx.conf -g \"daemon off;\"'"
   certbot:
     image: certbot/certbot
     restart: unless-stopped
