@@ -6,10 +6,10 @@ RUN apt-get update && apt-get -y upgrade && \
 
 WORKDIR /opt
 
-RUN wget https://nginx.org/download/nginx-1.18.0.tar.gz && \
+RUN wget https://nginx.org/download/nginx-1.19.4.tar.gz && \
     tar -zxvf nginx-1.*.tar.gz && \
     cd nginx-1.* && \
-    ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module --with-ipv6 --with-threads --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module && \
+    ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-stream_ssl_preread_module --with-http_ssl_module --with-ipv6 --with-threads --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module && \
     make && make install && \
     cd .. && rm -rf nginx-1.*
 

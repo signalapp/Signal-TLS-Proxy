@@ -6,6 +6,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
 fi
 
 data_path="./data/certbot"
+conf_path="./data/nginx-terminate"
 
 read -p "Enter domain name (eg. www.example.com): " domains
 
@@ -16,6 +17,7 @@ if [ -d "$data_path" ]; then
   fi
 fi
 
+sed -i -r "s/DOMAIN_NAME_HERE/$domains/" $conf_path/nginx.conf
 
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
   echo "### Downloading recommended TLS parameters ..."
