@@ -1,21 +1,44 @@
-FROM ubuntu:20.04
+FROM alpine:3.17 as build
 
-RUN apt-get update && apt-get -y upgrade && \
-    apt-get install -y wget libpcre3-dev build-essential libssl-dev zlib1g-dev && \
-    rm -rf /var/lib/apt/lists/*
+ARG NGINX_VER='1.22.1'
+
+RUN apk add --no-cache \
+      build-base \
+      libressl-dev \
+      pcre-dev \
+      zlib-dev
 
 WORKDIR /opt
 
-RUN wget https://nginx.org/download/nginx-1.18.0.tar.gz && \
-    tar -zxvf nginx-1.*.tar.gz && \
-    cd nginx-1.* && \
-    ./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module --with-ipv6 --with-threads --with-stream --with-stream_ssl_module --with-stream_ssl_preread_module && \
-    make && make install && \
-    cd .. && rm -rf nginx-1.*
+RUN wget "https://nginx.org/download/nginx-${NGINX_VER}.tar.gz" \
+    && tar -zxvf "nginx-${NGINX_VER}.tar.gz" \
+    && cd "nginx-${NGINX_VER}" \
+    && ./configure \
+        --prefix=/opt/nginx \
+        --user=nginx \
+        --group=nginx \
+        --with-http_ssl_module \
+        --with-ipv6 \
+        --with-threads \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
+    && make && make install \
+    && cd .. && rm -rf "nginx-${NGINX_VER}*"
 
-RUN adduser --system --no-create-home --disabled-login --disabled-password --group nginx
+FROM alpine:3.17 as final
 
-WORKDIR /
+RUN apk upgrade --update-cache \
+    && apk add \
+      libressl3.6-libcrypto \
+      libressl3.6-libssl \
+      pcre \
+    && rm -rf /var/cache/apk
+
+COPY --from=build /opt/ /opt/
+
+RUN addgroup -S nginx \
+    && adduser -SDHG nginx nginx
 
 EXPOSE 443
 

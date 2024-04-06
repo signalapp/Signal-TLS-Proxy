@@ -1,13 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-if ! [ -x "$(command -v docker-compose)" ]; then
-  echo 'Error: docker-compose is not installed.' >&2
+set -eu
+
+if [ -x "$(command -v docker compose)" ]; then
+  DOCKER_COMPOSE='docker compose'
+elif [ -x "$(command -v docker-compose)" ]; then
+  DOCKER_COMPOSE='docker-compose'
+else
+  echo 'Error: docker compose is not installed.' >&2
   exit 1
 fi
 
 data_path="./data/certbot"
 
-read -p "Enter domain name (eg. www.example.com): " domains
+if [ -z "$domains" ]; then
+  read -p "Enter domain name (eg. www.example.com): " domains
+fi
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
@@ -28,11 +36,11 @@ fi
 echo "### Requesting Let's Encrypt certificate for $domains ..."
 #Join $domains to -d args
 domain_args=""
-for domain in "${domains[@]}"; do
+for domain in $domains; do
   domain_args="$domain_args -d $domain"
 done
 
-docker-compose run -p 80:80 --rm --entrypoint "\
+$DOCKER_COMPOSE run -p 80:80 --rm --entrypoint "\
   sh -c \"certbot certonly --standalone \
     --register-unsafely-without-email \
     $domain_args \
@@ -40,4 +48,4 @@ docker-compose run -p 80:80 --rm --entrypoint "\
     --force-renewal && \
     ln -fs /etc/letsencrypt/live/$domains/ /etc/letsencrypt/active\"" certbot
 echo
-echo "After running 'docker-compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
+echo "After running '$DOCKER_COMPOSE up --detach' you can share your proxy as: https://signal.tube/#$domains"

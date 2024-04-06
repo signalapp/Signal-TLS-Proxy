@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/nginx-relay"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/nginx-terminate"
+    schedule:
+      interval: "weekly"
