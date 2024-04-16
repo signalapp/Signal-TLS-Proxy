@@ -1,5 +1,7 @@
 # Signal TLS Proxy
 
+Context: https://signal.org/blog/run-a-proxy/
+
 To run a Signal TLS proxy, you will need a host that has ports 80 and 443 available and a domain name that points to that host.
 
 1. Install docker and docker-compose (`apt update && apt install docker docker-compose`)
