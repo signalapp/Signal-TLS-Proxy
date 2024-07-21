@@ -40,4 +40,4 @@ docker compose run -p 80:80 --rm --entrypoint "\
     --force-renewal && \
     ln -fs /etc/letsencrypt/live/$domains/ /etc/letsencrypt/active\"" certbot
 echo
-echo "After running 'docker-compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
+echo "After running 'docker compose up --detach' you can share your proxy as: https://signal.tube/#$domains"
