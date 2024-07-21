@@ -32,7 +32,7 @@ for domain in "${domains[@]}"; do
   domain_args="$domain_args -d $domain"
 done
 
-docker-compose run -p 80:80 --rm --entrypoint "\
+docker compose run -p 80:80 --rm --entrypoint "\
   sh -c \"certbot certonly --standalone \
     --register-unsafely-without-email \
     $domain_args \
