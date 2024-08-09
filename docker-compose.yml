@@ -2,22 +2,22 @@ version: '3'
 
 services:
   nginx-terminate:
-    build: ./nginx-terminate/
+    build: ./docker-nginx
     restart: unless-stopped
     volumes:
-      - ./data/nginx-terminate:/etc/nginx/conf.d
+      - ./data/nginx-terminate:/usr/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     ports:
       - "443:443"
       - "80:80"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
-    build: ./nginx-relay/
+    build: ./docker-nginx
     restart: unless-stopped
     volumes:
-      - ./data/nginx-relay:/etc/nginx/conf.d
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
+      - ./data/nginx-relay:/usr/conf.d
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
   certbot:
     image: certbot/certbot
     restart: unless-stopped
