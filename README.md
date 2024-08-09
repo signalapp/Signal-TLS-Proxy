@@ -17,5 +17,6 @@ If you've previously run a proxy, please update to the most recent version by pu
 ```shell
 git pull
 docker-compose down
+docker-compose build
 docker-compose up --detach
 ```
