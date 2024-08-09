@@ -12,12 +12,27 @@ services:
       - "443:443"
       - "80:80"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
   nginx-relay:
     build: ./nginx-relay/
     restart: unless-stopped
     volumes:
       - ./data/nginx-relay:/etc/nginx/conf.d
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /opt/nginx/sbin/nginx -s reload; done & /opt/nginx/sbin/nginx -c /etc/nginx/conf.d/nginx.conf -g \"daemon off;\"'"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETUID
+      - SETGID
   certbot:
     image: certbot/certbot
     restart: unless-stopped
@@ -25,3 +40,5 @@ services:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    security_opt:
+      - no-new-privileges:true
