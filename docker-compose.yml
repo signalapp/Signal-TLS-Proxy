@@ -1,25 +1,23 @@
 services:
-  nginx-terminate:
-    build: ./docker-nginx
-    restart: unless-stopped
-    volumes:
-      - ./data/nginx-terminate:/usr/conf.d
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+  caddy-signal-proxy:
+    build: ./
+    image: caddy-signal-proxy
     ports:
-      - "443:443"
       - "80:80"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
-  nginx-relay:
-    build: ./docker-nginx
+      - "443:443"
     restart: unless-stopped
     volumes:
-      - ./data/nginx-relay:/usr/conf.d
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - ./config/caddy.json:/etc/caddy/caddy.json:ro,Z
+      - caddy_data:/data:Z
+      - caddy_config:/config:ro,Z
+    security_opt:
+      - no-new-privileges:true
+    cap_add:
+      - SETUID
+      - SETGID
+    command: run --config /etc/caddy/caddy.json
+
+volumes:
+  caddy_data:
+    external:  true
+  caddy_config:

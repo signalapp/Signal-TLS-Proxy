@@ -1,0 +1,66 @@
+{
+  "apps": {
+    "tls": {
+      "certificates": {
+        "automate": [
+          "sub.example.com"
+        ]
+      }
+    },
+    "layer4": {
+      "servers": {
+        "signal_proxy": {
+          "listen": [
+            ":443"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "tls"
+                }
+              ]
+            },
+            {
+              "match": [
+                {
+                  "tls": {
+                    "sni": [
+                      "chat.signal.org",
+                      "ud-chat.signal.org",
+                      "storage.signal.org",
+                      "cdn.signal.org",
+                      "cdn2.signal.org",
+                      "cdn3.signal.org",
+                      "api.directory.signal.org",
+                      "cdsi.signal.org",
+                      "sfu.voip.signal.org",
+                      "svr2.signal.org",
+                      "updates.signal.org",
+                      "updates2.signal.org",
+                      "backend1.svr3.signal.org",
+                      "backend2.svr3.signal.org",
+                      "backend3.svr3.signal.org"
+                    ]
+                  }
+                }
+              ],
+              "handle": [
+                {
+                  "handler": "proxy",
+                  "upstreams": [
+                    {
+                      "dial": [
+                        "{l4.tls.server_name}:443"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
