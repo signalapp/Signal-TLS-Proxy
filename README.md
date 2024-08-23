@@ -19,3 +19,7 @@ docker compose down
 docker compose build
 docker compose up --detach
 ```
+
+## Contributions welcome
+
+We want this proxy to be simple to deploy for a broad population, but we know that it won’t fit all deployments—especially  advanced users that already have running servers or specific technology preferences. We welcome contributions that make incremental improvements, updates, and improve compatibility, but aren’t considering significant architectural changes.
