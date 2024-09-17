@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/nginx-relay:/usr/conf.d
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/${NGINX_RELAY_CONFIG:-nginx.conf} -g \"daemon off;\"'"
   certbot:
     image: certbot/certbot
     restart: unless-stopped
