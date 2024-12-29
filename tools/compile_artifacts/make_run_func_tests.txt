@@ -1,0 +1,9 @@
+make run_func_tests
+🛠️ Building Functional Tests...
+gcc -Wall -Wextra -std=c11 -I/usr/local/opt/openssl@3/include functional_tests.c vpn_user_lib.o -o functional_tests -lssl -lcrypto -L/usr/local/opt/openssl@3/lib
+✅ Built functional_tests
+🛠️ Running Functional Tests...
+./functional_tests
+🛠️ Testing VPN user creation workflow...
+Enter VPN username: Enter VPN password: ✅ VPN user 'test_user' created successfully.
+✅ Functional test passed: User workflow completed successfully.

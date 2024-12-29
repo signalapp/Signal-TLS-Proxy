@@ -1,0 +1,87 @@
+make run
+🔧 Compiling VPN library into object file...
+gcc -Wall -Wextra -std=c11 -I/usr/local/opt/openssl@3/include -c vpn_user_lib.c -o vpn_user_lib.o
+vpn_user_lib.c:16:16: warning: 'RSA_new' is deprecated [-Wdeprecated-declarations]
+   16 |     RSA *rsa = RSA_new();
+      |                ^
+/usr/local/opt/openssl@3/include/openssl/rsa.h:212:1: note: 'RSA_new' has been explicitly marked deprecated here
+  212 | OSSL_DEPRECATEDIN_3_0 RSA *RSA_new(void);
+      | ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+vpn_user_lib.c:19:10: warning: 'RSA_generate_key_ex' is deprecated [-Wdeprecated-declarations]
+   19 |     if (!RSA_generate_key_ex(rsa, RSA_KEY_LENGTH, bn, NULL)) handle_errors();
+      |          ^
+/usr/local/opt/openssl@3/include/openssl/rsa.h:271:1: note: 'RSA_generate_key_ex' has been explicitly marked deprecated here
+  271 | OSSL_DEPRECATEDIN_3_0 int RSA_generate_key_ex(RSA *rsa, int bits, BIGNUM *e,
+      | ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+vpn_user_lib.c:31:5: warning: 'PEM_write_RSAPrivateKey' is deprecated [-Wdeprecated-declarations]
+   31 |     PEM_write_RSAPrivateKey(fp, rsa, NULL, NULL, 0, NULL, NULL);
+      |     ^
+/usr/local/opt/openssl@3/include/openssl/pem.h:452:24: note: 'PEM_write_RSAPrivateKey' has been explicitly marked deprecated here
+  452 | DECLARE_PEM_rw_cb_attr(OSSL_DEPRECATEDIN_3_0, RSAPrivateKey, RSA)
+      |                        ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+vpn_user_lib.c:42:12: warning: 'RSA_public_encrypt' is deprecated [-Wdeprecated-declarations]
+   42 |     return RSA_public_encrypt(input_len, input, output, rsa, RSA_PKCS1_OAEP_PADDING);
+      |            ^
+/usr/local/opt/openssl@3/include/openssl/rsa.h:292:1: note: 'RSA_public_encrypt' has been explicitly marked deprecated here
+  292 | OSSL_DEPRECATEDIN_3_0
+      | ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+vpn_user_lib.c:47:12: warning: 'RSA_private_decrypt' is deprecated [-Wdeprecated-declarations]
+   47 |     return RSA_private_decrypt(input_len, input, output, rsa, RSA_PKCS1_OAEP_PADDING);
+      |            ^
+/usr/local/opt/openssl@3/include/openssl/rsa.h:301:1: note: 'RSA_private_decrypt' has been explicitly marked deprecated here
+  301 | OSSL_DEPRECATEDIN_3_0
+      | ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+5 warnings generated.
+🔧 Compiling main application into object file...
+gcc -Wall -Wextra -std=c11 -I/usr/local/opt/openssl@3/include -c create_vpn_user.c -o create_vpn_user.o
+create_vpn_user.c:31:5: warning: 'RSA_free' is deprecated [-Wdeprecated-declarations]
+   31 |     RSA_free(rsa);
+      |     ^
+/usr/local/opt/openssl@3/include/openssl/rsa.h:304:1: note: 'RSA_free' has been explicitly marked deprecated here
+  304 | OSSL_DEPRECATEDIN_3_0 void RSA_free(RSA *r);
+      | ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:206:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  206 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+1 warning generated.
+🔧 Building main application (create_vpn_user)...
+gcc -Wall -Wextra -std=c11 -I/usr/local/opt/openssl@3/include vpn_user_lib.o create_vpn_user.o -o create_vpn_user -lssl -lcrypto -L/usr/local/opt/openssl@3/lib
+✅ Built create_vpn_user
+🚀 Running create_vpn_user...
+./create_vpn_user
+Enter VPN username: user1
+Enter VPN password: 
+✅ VPN user 'user1' created successfully..
