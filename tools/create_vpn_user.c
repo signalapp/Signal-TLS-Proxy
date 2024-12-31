@@ -3,48 +3,61 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Create VPN User
+// Create VPN User with Encrypted Certificate
 void create_vpn_user(const char *username, const char *password) {
-    RSA *rsa = generate_rsa_keypair();
-    save_private_key(rsa, "vpn_user_private.pem");
+    printf("🔑 Generating VPN user with certificate for '%s'...\n", username);
 
+    // Step 1: Generate and Encrypt Certificate
+    create_vpn_user_with_cert(username, password);
+
+    // Step 2: Hash Password
     unsigned char hashed_password[SHA256_DIGEST_LENGTH];
     hash_password(password, hashed_password);
 
-    unsigned char encrypted_password[ENCRYPTED_PASSWORD_LENGTH];
-    int encrypted_len = rsa_encrypt(rsa, hashed_password, SHA256_DIGEST_LENGTH, encrypted_password);
-    if (encrypted_len == -1) handle_errors();
+    char hashed_password_hex[SHA256_DIGEST_LENGTH * 2 + 1];
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        sprintf(&hashed_password_hex[i * 2], "%02x", hashed_password[i]);
+    }
 
+    // Step 3: Log User Information
     FILE *fp = fopen("vpn_users.txt", "a");
     if (!fp) {
-        perror("Failed to open VPN user file");
+        perror("Failed to open VPN user log file");
         exit(EXIT_FAILURE);
     }
+
     fprintf(fp, "Username: %s\n", username);
-    fprintf(fp, "Encrypted Password: ");
-    for (int i = 0; i < encrypted_len; i++) {
-        fprintf(fp, "%02x", encrypted_password[i]);
-    }
-    fprintf(fp, "\n\n");
+    fprintf(fp, "Password Hash: %s\n", hashed_password_hex);
+    fprintf(fp, "Certificate: certs/%s_cert.pem\n\n", username);
     fclose(fp);
 
-    RSA_free(rsa);
-    printf("✅ VPN user '%s' created successfully.\n", username);
+    printf("✅ VPN user '%s' created successfully with certificate and password hash.\n", username);
 }
 
+// Main Program Entry
 int main() {
     char username[MAX_USERNAME_LENGTH];
     char password[MAX_PASSWORD_LENGTH];
 
-    printf("Enter VPN username: ");
-    fgets(username, MAX_USERNAME_LENGTH, stdin);
+    printf("🔒 Enter VPN username: ");
+    if (!fgets(username, MAX_USERNAME_LENGTH, stdin)) {
+        fprintf(stderr, "❌ Failed to read username.\n");
+        exit(EXIT_FAILURE);
+    }
     username[strcspn(username, "\n")] = 0;
 
-    printf("Enter VPN password: ");
-    fgets(password, MAX_PASSWORD_LENGTH, stdin);
+    printf("🔑 Enter VPN password: ");
+    if (!fgets(password, MAX_PASSWORD_LENGTH, stdin)) {
+        fprintf(stderr, "❌ Failed to read password.\n");
+        exit(EXIT_FAILURE);
+    }
     password[strcspn(password, "\n")] = 0;
+
+    if (strlen(username) == 0 || strlen(password) == 0) {
+        fprintf(stderr, "❌ Username and password cannot be empty.\n");
+        exit(EXIT_FAILURE);
+    }
 
     create_vpn_user(username, password);
     return 0;
 }
-
