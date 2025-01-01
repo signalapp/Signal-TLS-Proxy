@@ -6,8 +6,8 @@
 
 # Compiler and Flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
-LDFLAGS = -lssl -lcrypto
+CFLAGS = -Wall -Wextra -std=c11 -I/usr/local/opt/openssl@3/include
+LDFLAGS = -L/usr/local/opt/openssl@3/lib -lssl -lcrypto
 
 # Source Files
 VPN_LIB_SRC = vpn_user_lib.c
