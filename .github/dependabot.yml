@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: "docker"
-    directory: "/docker-nginx"
+  - package-ecosystem: "docker-compose"
+    directory: "/"
     schedule:
       interval: "weekly"
