@@ -1,6 +1,6 @@
 services:
   nginx-terminate:
-    image: nginx:stable-alpine@sha256:aed99734248e851764f1f2146835ecad42b5f994081fa6631cc5d79240891ec9
+    image: nginx:stable-alpine@sha256:d83c0138ea82c9f05c4378a5001e0c71256b647603c10c186bd7697a4db722d3
     restart: unless-stopped
     volumes:
       - ./data/nginx-terminate:/usr/conf.d
@@ -11,7 +11,7 @@ services:
       - "80:80"
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; /usr/sbin/nginx -s reload; done & /usr/sbin/nginx -c /usr/conf.d/nginx.conf -g \"daemon off;\"'"
   nginx-relay:
-    image: nginx:stable-alpine@sha256:aed99734248e851764f1f2146835ecad42b5f994081fa6631cc5d79240891ec9
+    image: nginx:stable-alpine@sha256:d83c0138ea82c9f05c4378a5001e0c71256b647603c10c186bd7697a4db722d3
     restart: unless-stopped
     volumes:
       - ./data/nginx-relay:/usr/conf.d
