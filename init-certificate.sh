@@ -11,6 +11,9 @@ else
   exit 1
 fi
 
+# Always run from the project root.
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+cd "$script_dir" || exit 1
 data_path='./data/certbot'
 
 read -r -p 'Enter domain name(s), separated by spaces: ' -a domains
