@@ -67,3 +67,4 @@ if ! "${compose[@]}" run -p 80:80 --rm --entrypoint sh certbot \
 fi
 
 printf "\nAfter running '%s up --detach' you can share your proxy as: https://signal.tube/#%s\n" "${compose[*]}" "${domains[0]}"
+printf "### Certificate for %s has been successfully obtained and linked.\n" "${domains[0]}"
