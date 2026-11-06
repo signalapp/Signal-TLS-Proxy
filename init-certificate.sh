@@ -13,13 +13,10 @@ data_path="./data/certbot"
 
 read -p "Enter domain name (eg. www.example.com): " domains
 
-if [ -d "$data_path" ]; then
-  read -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
-  if [ "$decision" != "Y" ] && [ "$decision" != "y" ]; then
-    exit
-  fi
+if [[ -d "$data_path" ]]; then
+    read -r -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
+    [[ "$decision" == [Yy] ]] || exit 1
 fi
-
 
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
   echo "### Downloading recommended TLS parameters ..."
