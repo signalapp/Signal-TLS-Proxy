@@ -1,44 +1,69 @@
-#!/bin/bash
 
-if [ -x "$(command -v docker-compose)" ]; then
-  DOCKER_COMPOSE_CMD="docker-compose"
-elif docker compose version; then
-  DOCKER_COMPOSE_CMD="docker compose"
+#!/usr/bin/env bash
+
+# Prefer Docker Compose v2, fall back to v1.
+if docker compose version &>/dev/null; then
+  compose=(docker compose)
+elif docker-compose version &>/dev/null; then
+  compose=(docker-compose)
 else
-  echo 'Error: neither docker-compose (v1) nor docker-compose-plugin (v2) is installed.' >&2
+  echo 'Error: Docker Compose v1 or v2 is required.' >&2
   exit 1
 fi
 
-data_path="./data/certbot"
+data_path='./data/certbot'
 
-read -p "Enter domain name (eg. www.example.com): " domains
+read -r -p 'Enter domain name(s), separated by spaces: ' -a domains
+if ((${#domains[@]} == 0)); then
+  echo 'Error: at least one domain is required.' >&2
+  exit 1
+fi
 
 if [[ -d "$data_path" ]]; then
-    read -r -p "Existing data found. Continue and replace existing certificate? (y/N) " decision
-    [[ "$decision" == [Yy] ]] || exit 1
+  read -r -p 'Existing data found. Continue and replace existing certificate? (y/N) ' decision
+  [[ "$decision" == [Yy] ]] || exit 1
 fi
 
-if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
-  echo "### Downloading recommended TLS parameters ..."
-  mkdir -p "$data_path/conf"
-  curl -s https://raw.githubusercontent.com/certbot/certbot/refs/heads/main/certbot/src/certbot/_internal/plugins/nginx/tls_configs/options-ssl-nginx.conf > "$data_path/conf/options-ssl-nginx.conf"
-  curl -s https://raw.githubusercontent.com/certbot/certbot/main/certbot/src/certbot/ssl-dhparams.pem > "$data_path/conf/ssl-dhparams.pem"
-  echo
-fi
+# Download missing files without leaving partial downloads.
+download_if_missing() {
+  local url=$1 dest=$2 temp
+  [[ -f "$dest" ]] && return 0
 
-echo "### Requesting Let's Encrypt certificate for $domains ..."
-#Join $domains to -d args
-domain_args=""
+  printf '### Downloading %s ...\n' "${dest##*/}"
+  temp=$(mktemp "$dest.XXXXXX") || return 1
+
+  if curl -fsSL "$url" -o "$temp" && mv "$temp" "$dest"; then
+    return 0
+  fi
+
+  rm -f "$temp"
+  return 1
+}
+
+conf_dir="$data_path/conf"
+base_url='https://raw.githubusercontent.com/certbot/certbot/main/certbot/src/certbot'
+mkdir -p "$conf_dir" || exit 1
+
+download_if_missing "$base_url/_internal/plugins/nginx/tls_configs/options-ssl-nginx.conf" "$conf_dir/options-ssl-nginx.conf" || exit 1
+download_if_missing "$base_url/ssl-dhparams.pem" "$conf_dir/ssl-dhparams.pem" || exit 1
+
+# Build arguments for each domain.
+domain_args=()
 for domain in "${domains[@]}"; do
-  domain_args="$domain_args -d $domain"
+  domain_args+=(-d "$domain")
 done
 
-${DOCKER_COMPOSE_CMD} run -p 80:80 --rm --entrypoint "\
-  sh -c \"certbot certonly --standalone \
-    --register-unsafely-without-email \
-    $domain_args \
-    --agree-tos \
-    --force-renewal && \
-    ln -fs /etc/letsencrypt/live/$domains/ /etc/letsencrypt/active\"" certbot
-echo
-echo "After running '${DOCKER_COMPOSE_CMD} up --detach' you can share your proxy as: https://signal.tube/#$domains"
+printf "### Requesting Let's Encrypt certificate for %s ...\n" "${domains[*]}"
+
+if ! "${compose[@]}" run -p 80:80 --rm --entrypoint sh certbot \
+  -c 'primary_domain=$1; shift
+      certbot certonly --standalone \
+        --register-unsafely-without-email \
+        --agree-tos --force-renewal "$@" &&
+      ln -sfn "/etc/letsencrypt/live/$primary_domain/" /etc/letsencrypt/active' \
+  sh "${domains[0]}" "${domain_args[@]}"; then
+  echo 'Error: certificate request or symlink update failed.' >&2
+  exit 1
+fi
+
+printf "\nAfter running '%s up --detach' you can share your proxy as: https://signal.tube/#%s\n" "${compose[*]}" "${domains[0]}"
